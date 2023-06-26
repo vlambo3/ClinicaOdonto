@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio</title>
+    <!--  JavaScript Bundle with Popper -->
+    <!--    Antes del link principal agrego la el link de css y movemos el principal antes del cierre del body-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Clínica Muelitas</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <!--                    <li class="nav-item">-->
+                <!--                        <a class="nav-link" href="#">Odontologos</a>-->
+                <!--                    </li>-->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Gestión Odontólogos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/post_odontologo.html">Registrar</a></li>
+                        <!--                            <li><a class="dropdown-item" href="#">Another action</a></li>-->
+                        <!--                            <li><hr class="dropdown-divider"></li>-->
+                        <!--                            <li><a class="dropdown-item" href="#">Something else here</a></li>-->
+                    </ul>
+                </li>
+                <!--                    <li class="nav-item">-->
+                <!--                        <a class="nav-link disabled">Disabled</a>-->
+                <!--                    </li>-->
+            </ul>
+            <!--                <form class="d-flex" role="search">-->
+            <!--                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
+            <!--                    <button class="btn btn-outline-success" type="submit">Search</button>-->
+            <!--                </form>-->
+        </div>
+    </div>
+</nav>
+
+<!--Acá va el form y el código nuevo -->
+<div class="container">
+<!--    No nos interesa el ul porque lo reemplazamos por una barra de navegación-->
+<!--    <ul class="nav nav-pills">-->
+<!--        <li class="nav-item">-->
+<!--            <a class="nav-link" href="/peliculaList.html">Listar Peliculas</a>-->
+<!--        </li>-->
+<!--    </ul>-->
+    <div class="row">
+        <div class="col-sm-7" style="background-color:#e6fffa; padding:10px; border-radius:3px">
+            <h3>Agregar Odontologo</h3>
+<!--            el id este es el que me llevo a JS-->
+            <form id="add_new_odontologo">
+                <div class="form-group">
+                    <label class="control-label" for="matricula">Matricula:</label>
+                    <input type="text" class="form-control" id="matricula"
+                           placeholder="Ingrese la matricula"
+                           name="matricula" required></input>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="nombre">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre"
+                           placeholder="Ingrese el nombre"
+                           name="nombre" required></input>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="apellido">Apellido:</label>
+                    <input type="text" class="form-control" id="apellido"
+                           placeholder="Ingrese el apellido"
+                           name="apellido" required></input>
+                </div>
+
+
+                <button type="submit" class="btn btn-danger"
+                        id="btn-add-new-odontologo">Guardar</button>
+            </form>
+            <div id="response" style="display:none; margin-top:10px">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/js/post_odontologo.js"></script>
+</body>
+</html>
