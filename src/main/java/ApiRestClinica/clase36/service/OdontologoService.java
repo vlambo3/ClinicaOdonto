@@ -1,35 +1,44 @@
 package ApiRestClinica.clase36.service;
 
+import ApiRestClinica.clase36.exception.ResourceNotFoundException;
+import ApiRestClinica.clase36.model.Odontologo;
+import ApiRestClinica.clase36.repository.OdontologoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OdontologoService {
-    /*
-    private IDao<Odontologo> odontologoIDao;
 
-    public OdontologoService(IDao<Odontologo> odontologoIDao) {
-        this.odontologoIDao = odontologoIDao;
-    }
-
-    public OdontologoService() {
-
-    }
+    @Autowired
+    private OdontologoRepository odontologoRepository;
 
     public List<Odontologo> listarOdontologos() {
-        return odontologoIDao.buscarTodo();
+        return odontologoRepository.findAll();
     }
     public Odontologo guardarOdontologo(Odontologo odontologo) {
-        return odontologoIDao.guardar(odontologo);
+        return odontologoRepository.save(odontologo);
     }
     public void actualizarOdontologo(Odontologo odontologo) {
-        odontologoIDao.actualizar(odontologo);
+        odontologoRepository.save(odontologo);
     }
-    public void eliminarOdontologo(Integer id) {
-        odontologoIDao.eliminar(id);
+    public void eliminarOdontologo(Long id) throws ResourceNotFoundException {
+        //el se va a encargar de manejar la excepcion
+        Optional<Odontologo> odontologoAEliminar = buscarOdontologoXId(id);
+        if (odontologoAEliminar.isPresent()){
+            odontologoRepository.deleteById(id);
+        }
+        else {
+            throw new ResourceNotFoundException("El odontologo a eliminar no existe " +
+                    "en la base de datos, se intentó encontrar sin éxito el id= " + id);
+        }
+        odontologoRepository.deleteById(id);
     }
-    public Odontologo buscarOdontologoXId(Integer id){
-        return odontologoIDao.buscar(id);
+    public Optional<Odontologo> buscarOdontologoXId(Long id){
+        return odontologoRepository.findById(id);
     }
 
-     */
+
 }

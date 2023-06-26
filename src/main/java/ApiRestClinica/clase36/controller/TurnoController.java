@@ -1,42 +1,42 @@
 package ApiRestClinica.clase36.controller;
 
+import ApiRestClinica.clase36.dto.TurnoDTO;
+import ApiRestClinica.clase36.exception.BadRequestException;
+import ApiRestClinica.clase36.model.Turno;
+import ApiRestClinica.clase36.service.OdontologoService;
+import ApiRestClinica.clase36.service.PacienteService;
+import ApiRestClinica.clase36.service.TurnoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/turnos")
 public class TurnoController {
-    /*
+
     private TurnoService turnoService;
+    private PacienteService pacienteService;
+    private OdontologoService odontologoService;
 
     @Autowired
-    public TurnoController(TurnoService turnoService) {
+    public TurnoController(TurnoService turnoService, PacienteService pacienteService, OdontologoService odontologoService) {
         this.turnoService = turnoService;
+        this.pacienteService = pacienteService;
+        this.odontologoService = odontologoService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Turno>> listarTurnos() {
-//        antes podia usar este metodo, pero ahora debemos responder un ResponseEntity
-//        return turnoService.buscarTodosTurnos();
-//        entonces vamos a usar un método estático
-        return ResponseEntity.ok(turnoService.buscarTodosTurnos());
+    public ResponseEntity<List<TurnoDTO>> listarTurnos() {
+        return ResponseEntity.ok(turnoService.buscarTodosLosTurnos());
     }
-
     @GetMapping("/{id}")
-    public ResponseEntity<Turno> buscarTurnoXId(@PathVariable Integer id) {
-    //tengo dos alternativas
-        //vamos a optimizar el código, porque si la DB es muy grande, iría dos veces a hacer la búsqueda, se demoraría mucho
-//
-//        if (turnoService.buscarTurno(id) != null) {
-//        return ResponseEntity.ok(turnoService.buscarTurno(id));
-//    }
-//    else {
-//        //no existe el turno con el id ingresado
-//        return ResponseEntity.notFound().build();
-//    }
-
-        Turno turnoBuscado = turnoService.buscarTurno(id);
-        if (turnoBuscado != null) {
-            return ResponseEntity.ok(turnoBuscado);
+    public ResponseEntity<TurnoDTO> buscarTurno(@PathVariable("id") Long id) {
+        Optional<TurnoDTO> turnoBuscado = turnoService.buscarTurno(id);
+        if (turnoBuscado.isPresent()) {
+            return ResponseEntity.ok(turnoBuscado.get());
         }
         else {
             //no existe el turno con el id ingresado
@@ -46,52 +46,34 @@ public class TurnoController {
     }
 
     @PostMapping
-    public ResponseEntity<Turno> registrarTurno(@RequestBody Turno turno) {
-        PacienteService pacienteService = new PacienteService();
-        OdontologoService odontologoService = new OdontologoService();
-        ResponseEntity<Turno> respuesta;
+    public ResponseEntity<TurnoDTO> registrarTurno(@RequestBody TurnoDTO turno) throws BadRequestException  {
+        ResponseEntity<TurnoDTO> respuesta;
 
-        if (pacienteService.buscarPaciente(turno.getPaciente().getId()) != null &&
-                odontologoService.buscarOdontologoXId(turno.getOdontologo().getId()) != null) {
-            //ambos existen en la BD
-            //podemos registar el turno sin problemas, indicamos un 200OK
-
+        if (pacienteService.buscarPaciente(turno.getPacienteId()).isPresent() &&
+                odontologoService.buscarOdontologoXId(turno.getOdontologoId()).isPresent()) {
             respuesta = ResponseEntity.ok(turnoService.guardarTurno(turno));
 
         } else {
-            //uno o ambos no existen, debemos bloquear la operacion
-            respuesta = ResponseEntity.badRequest().build();
-
-            //alternativa para seleccionar cualquier mejor cualquier código
-            //respuesta = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new BadRequestException("No se puede registrar un turno cuando no exista, cuando "
+                    + "no exista un odontologo y/o un paciente");
         }
         return respuesta;
     }
 
     @PutMapping
-    public ResponseEntity<String> actualizarTurno(@RequestBody Turno turno) {
-        //verificar que el turno exista
-        //contorl como el post
-        PacienteService pacienteService = new PacienteService();
-        OdontologoService odontologoService = new OdontologoService();
-        ResponseEntity<Turno> respuesta;
+    public ResponseEntity<String> actualizarTurno(@RequestBody TurnoDTO turno) throws BadRequestException {
+        ResponseEntity<TurnoDTO> respuesta;
 
-        if (turnoService.buscarTurno(turno.getId()) != null) {
+        if (turnoService.buscarTurno(turno.getId()).isPresent()) {
             //es un id válido
-            if (pacienteService.buscarPaciente(turno.getPaciente().getId()) != null &&
-                    odontologoService.buscarOdontologoXId(turno.getOdontologo().getId()) != null) {
-                //ambos existen en la BD
-                //podemos registar el turno sin problemas, indicamos un 200OK
-                turnoService.actualizarTurno(turno);
+            if (pacienteService.buscarPaciente(turno.getPacienteId()).isPresent() &&
+                    odontologoService.buscarOdontologoXId(turno.getOdontologoId()).isPresent()) {
+                respuesta = ResponseEntity.ok(turnoService.guardarTurno(turno));
                 return ResponseEntity.ok("Se actualizó el turno con id = "+ turno.getId());
 
             } else {
-                //uno o ambos no existen, debemos bloquear la operacion
-                return ResponseEntity.badRequest().body("Error al actualizar, verificar si el odontologo "+
-                        "o el paciente existe en la DB");
-
-                //alternativa para seleccionar cualquier mejor cualquier código
-                //respuesta = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                return ResponseEntity.badRequest().body("Error al actualizar, verificar si el " +
+                        "odontologo y/o el paciente existen en la base de datos.");
             }
         }
         else {
@@ -104,8 +86,8 @@ public class TurnoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarTurno(@PathVariable Integer id) {
-        if (turnoService.buscarTurno(id) != null) {
+    public ResponseEntity<String> eliminarTurno(@PathVariable Long id) {
+        if (turnoService.buscarTurno(id).isPresent()) {
             turnoService.eliminarTurno(id);
             return ResponseEntity.ok().body("Se eliminó el turno con id = " + id);
         }
@@ -115,5 +97,5 @@ public class TurnoController {
         }
     }
 
-     */
+
 }
