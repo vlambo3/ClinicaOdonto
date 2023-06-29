@@ -22,5 +22,8 @@ public class CargarDatosIniciales implements ApplicationRunner {
         Usuario usuario = new Usuario("Vanina", "Vanina", "vanina@gmail.com",
                 passCifrada, UsuarioRole.ROLE_USER);
         usuarioRepository.save(usuario);
+        usuario = new Usuario("Andrea", "Andrea", "andrea@gmail.com",
+                passCifrada, UsuarioRole.ROLE_ADMIN);
+        usuarioRepository.save(usuario);
     }
 }
